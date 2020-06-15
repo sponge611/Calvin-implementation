@@ -22,6 +22,7 @@ import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 import org.vanilladb.bench.util.BenchProperties;
+import org.vanilladb.comm.client.VanillaCommClient;
 
 public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 
@@ -40,7 +41,7 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 	}
 
 	@Override
-	public TxnResultSet execute(SutConnection conn) {
+	public TxnResultSet execute(VanillaCommClient client, int targetServerId) {
 		try {
 			// keying
 			if (ENABLE_THINK_AND_KEYING_TIME) {
@@ -55,7 +56,7 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
 			
-			SutResultSet result = executeTxn(conn, params);
+			SutResultSet result = executeTxn(client, params, targetServerId);
 
 			// measure txn Sresponse time
 			long txnEndTime = System.nanoTime();

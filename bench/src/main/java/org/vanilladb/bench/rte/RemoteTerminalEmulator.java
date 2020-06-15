@@ -17,12 +17,15 @@ package org.vanilladb.bench.rte;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.BenchTransactionType;
+import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
+import org.vanilladb.comm.client.VanillaCommClient;
+import org.vanilladb.comm.client.VanillaCommClientListener;
+import org.vanilladb.comm.view.ProcessView;
 
-public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
+public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread implements VanillaCommClientListener{
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
 
@@ -30,19 +33,26 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private volatile boolean isWarmingUp = true;
 	private SutConnection conn;
 	private StatisticMgr statMgr;
-	
+	private int selfId;
+	private VanillaCommClient client;
+	private int serverCount = ProcessView.buildServersProcessList(-1).getSize();
+	private int targetServerId;
 	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
 		this.conn = conn;
 		this.statMgr = statMgr;
 		
 		// Set the thread name
 		setName("RTE-" + rteCount.getAndIncrement());
+		this.selfId = rteCount.get();
+		this.targetServerId = selfId % serverCount;
+		this.client = new VanillaCommClient(this.selfId, this);
+		new Thread(client).start();
 	}
 
 	@Override
 	public void run() {
 		while (!stopBenchmark) {
-			TxnResultSet rs = executeTxnCycle(conn);
+			TxnResultSet rs = executeTxnCycle();
 			if (!isWarmingUp)
 				statMgr.processTxnResult(rs);
 		}
@@ -61,9 +71,14 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	
 	protected abstract TransactionExecutor<T> getTxExeutor(T type);
 
-	private TxnResultSet executeTxnCycle(SutConnection conn) {
+	/*private TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		return executor.execute(conn);
+	}*/
+	private TxnResultSet executeTxnCycle() {
+		T txType = getNextTxType();
+		TransactionExecutor<T> executor = getTxExeutor(txType);
+		return executor.execute(this.client,this.targetServerId);
 	}
 }

@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.tpcc.rte;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -25,6 +26,7 @@ import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
+import org.vanilladb.comm.view.ProcessType;
 
 public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	
@@ -60,5 +62,11 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	
 	protected TpccTxExecutor getTxExeutor(TpccTransactionType type) {
 		return executors.get(type);
+	}
+
+	@Override
+	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

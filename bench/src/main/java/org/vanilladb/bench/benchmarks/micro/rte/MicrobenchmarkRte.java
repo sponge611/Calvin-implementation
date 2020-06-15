@@ -15,10 +15,13 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.micro.rte;
 
+import java.io.Serializable;
+
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
+import org.vanilladb.comm.view.ProcessType;
 
 public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicrobenchTransactionType> {
 	
@@ -35,5 +38,11 @@ public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicrobenchTransact
 	
 	protected MicrobenchmarkTxExecutor getTxExeutor(MicrobenchTransactionType type) {
 		return executor;
+	}
+
+	@Override
+	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

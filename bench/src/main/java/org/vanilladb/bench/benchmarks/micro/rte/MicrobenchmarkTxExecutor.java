@@ -23,6 +23,7 @@ import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.rte.TxParamGenerator;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
+import org.vanilladb.comm.client.VanillaCommClient;
 
 public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTransactionType> {
 	
@@ -32,7 +33,7 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 		this.pg = pg;
 	}
 
-	public TxnResultSet execute(SutConnection conn) {
+	public TxnResultSet execute(VanillaCommClient client, int targetServerId) {
 		try {
 			// generate parameters
 			Object[] params = pg.generateParameter();
@@ -40,7 +41,7 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
 			
-			SutResultSet result = executeTxn(conn, params);
+			SutResultSet result = executeTxn(client, params, targetServerId);
 
 			// measure txn response time
 			long txnEndTime = System.nanoTime();

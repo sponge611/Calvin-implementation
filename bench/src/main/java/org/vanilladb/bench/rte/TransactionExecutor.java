@@ -25,6 +25,8 @@ import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 import org.vanilladb.bench.util.BenchProperties;
+import org.vanilladb.comm.client.*;
+import org.vanilladb.comm.view.ProcessType;
 
 public abstract class TransactionExecutor<T extends BenchTransactionType> {
 
@@ -37,14 +39,14 @@ public abstract class TransactionExecutor<T extends BenchTransactionType> {
 
 	protected TxParamGenerator<T> pg;
 
-	public abstract TxnResultSet execute(SutConnection conn);
+	public abstract TxnResultSet execute(VanillaCommClient client, int targetServerId);
 	
 	protected abstract JdbcExecutor<T> getJdbcExecutor();
 	
-	protected SutResultSet executeTxn(SutConnection conn, Object[] pars) throws SQLException {
+	protected SutResultSet executeTxn(VanillaCommClient client, Object[] pars, int targetServerId) throws SQLException {
 		SutResultSet result = null;
 		
-		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		/*switch (BenchmarkerParameters.CONNECTION_MODE) {
 		case JDBC:
 			Connection jdbcConn = conn.toJdbcConnection();
 			jdbcConn.setAutoCommit(false);
@@ -53,7 +55,8 @@ public abstract class TransactionExecutor<T extends BenchTransactionType> {
 		case SP:
 			result = conn.callStoredProc(pg.getTxnType().getProcedureId(), pars);
 			break;
-		}
+		}*/
+		client.sendP2pMessage(ProcessType.SERVER, targetServerId, pars);
 		
 		return result;
 	}
