@@ -77,7 +77,7 @@ public class ServerDemo implements VanillaCommServerListener {
 		double[] newItemPrice;
 		String[] itemName;
 		double[] itemPrice;
-		int indexCnt = 1;
+		int indexCnt = 2;
 
 		readCount = (Integer) pars[indexCnt++];
 		readItemId = new int[readCount];
