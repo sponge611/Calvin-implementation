@@ -41,7 +41,7 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 	}
 
 	@Override
-	public TxnResultSet execute(VanillaCommClient client, int targetServerId) {
+	public void execute(VanillaCommClient client, int targetServerId, int selfId) {
 		try {
 			// keying
 			if (ENABLE_THINK_AND_KEYING_TIME) {
@@ -73,8 +73,8 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 				Thread.sleep(t);
 			}
 
-			return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
-					result.isCommitted(), result.outputMsg());
+			/*return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
+					result.isCommitted(), result.outputMsg());*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

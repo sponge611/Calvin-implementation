@@ -39,7 +39,7 @@ public abstract class TransactionExecutor<T extends BenchTransactionType> {
 
 	protected TxParamGenerator<T> pg;
 
-	public abstract TxnResultSet execute(VanillaCommClient client, int targetServerId);
+	public abstract void execute(VanillaCommClient client, int targetServerId, int selfId);
 	
 	protected abstract JdbcExecutor<T> getJdbcExecutor();
 	

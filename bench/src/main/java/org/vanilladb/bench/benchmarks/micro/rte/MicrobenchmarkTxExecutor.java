@@ -33,10 +33,10 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 		this.pg = pg;
 	}
 
-	public TxnResultSet execute(VanillaCommClient client, int targetServerId) {
+	public void execute(VanillaCommClient client, int targetServerId, int selfId) {
 		try {
 			// generate parameters
-			Object[] params = pg.generateParameter();
+			Object[] params = pg.generateParameter(selfId);
 
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
@@ -51,8 +51,8 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 			if (TransactionExecutor.DISPLAY_RESULT)
 				System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
-			return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
-					result.isCommitted(), result.outputMsg());
+			/*return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
+					result.isCommitted(), result.outputMsg());*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

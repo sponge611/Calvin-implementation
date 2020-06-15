@@ -63,4 +63,10 @@ public class OrderStatusParamGen implements TpccTxParamGenerator {
 				* 1000;
 	}
 
+	@Override
+	public Object[] generateParameter(int selfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -13,7 +13,7 @@ public class ServerDemo implements VanillaCommServerListener {
 	
 	private static final BlockingQueue<Serializable> msgQueue =
 			new LinkedBlockingDeque<Serializable>();
-	
+	private static BlockingQueue<Serializable> clientList = new LinkedBlockingDeque<Serializable>();
 	public static void main(String[] args) {
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Initializing the server...");
@@ -22,6 +22,7 @@ public class ServerDemo implements VanillaCommServerListener {
 		VanillaCommServer server = new VanillaCommServer(selfId, new ServerDemo());
 		new Thread(server).start();
 		createClientRequestHandler(server);
+		clientHandler(server);
 	}
 
 	private static void createClientRequestHandler(
@@ -68,7 +69,62 @@ public class ServerDemo implements VanillaCommServerListener {
 
 	@Override
 	public void onReceiveTotalOrderMessage(long serialNumber, Serializable message) {
-		System.out.println("Received a total order message: " + message
-				+ ", serial number: " + serialNumber);
+		Object[] pars = (Object[])message;
+		int readCount;
+		int writeCount;
+		int[] readItemId;
+		int[] writeItemId;
+		double[] newItemPrice;
+		String[] itemName;
+		double[] itemPrice;
+		int indexCnt = 1;
+
+		readCount = (Integer) pars[indexCnt++];
+		readItemId = new int[readCount];
+		itemName = new String[readCount];
+		itemPrice = new double[readCount];
+
+		for (int i = 0; i < readCount; i++)
+			readItemId[i] = (Integer) pars[indexCnt++];
+
+		writeCount = (Integer) pars[indexCnt++];
+		writeItemId = new int[writeCount];
+		for (int i = 0; i < writeCount; i++)
+			writeItemId[i] = (Integer) pars[indexCnt++];
+		newItemPrice = new double[writeCount];
+		for (int i = 0; i < writeCount; i++)
+			newItemPrice[i] = (Double) pars[indexCnt++];
+		System.out.println("SrialNumber: " + serialNumber);
+		for (int i=0; i<writeCount; i++)
+			System.out.println(writeItemId[i]);
 	}
+	
+	public static void clientHandler(final VanillaCommServer server) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				int i = 0;
+				while (true) {
+					try {
+						Serializable message = clientList.take();
+						Object[] analysis = (Object[])message;
+						String str = "Got it! num: " + i;
+						Serializable ack = (Serializable)  str;
+						server.sendP2pMessage(ProcessType.CLIENT, (Integer)analysis[0], ack);
+						i++;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}).start();
+		
+	}
+	
+	public void appendIntoClientList(Serializable message) {
+		clientList.add(message);
+	}
+	
 }

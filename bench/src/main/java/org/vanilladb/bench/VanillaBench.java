@@ -48,14 +48,14 @@ public class VanillaBench {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("checking the database on the server...");
 
-			SutConnection conn = getConnection();
-			boolean result = benchmarker.executeDatabaseCheckProcedure(conn);
+			//SutConnection conn = getConnection();
+			/*boolean result = benchmarker.executeDatabaseCheckProcedure(conn);
 
 			if (!result) {
 				if (logger.isLoggable(Level.SEVERE))
 					logger.severe("the database is not ready, please load the database again.");
 				return;
-			}
+			}*/
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("database check passed.");
@@ -65,9 +65,9 @@ public class VanillaBench {
 			
 			int rteCount = benchmarker.getNumOfRTEs();
 			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[rteCount];
-			emulators[0] = benchmarker.createRte(conn, statMgr); // Reuse the connection
+			emulators[0] = benchmarker.createRte(statMgr); // Reuse the connection
 			for (int i = 1; i < emulators.length; i++)
-				emulators[i] = benchmarker.createRte(getConnection(), statMgr);
+				emulators[i] = benchmarker.createRte(statMgr);
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("waiting for connections...");

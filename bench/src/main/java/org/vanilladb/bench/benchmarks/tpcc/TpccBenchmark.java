@@ -49,8 +49,8 @@ public class TpccBenchmark extends Benchmark {
 	}
 
 	@Override
-	public RemoteTerminalEmulator<TpccTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
-		TpccRte rte = new TpccRte(conn, statMgr, nextWid + 1);
+	public RemoteTerminalEmulator<TpccTransactionType> createRte(StatisticMgr statMgr) {
+		TpccRte rte = new TpccRte(statMgr, nextWid + 1);
 		nextWid = (nextWid + 1) % TpccConstants.NUM_WAREHOUSES;
 		return rte;
 	}

@@ -54,4 +54,10 @@ public class StockLevelParamGen implements TpccTxParamGenerator {
 		return (long) -Math.log(r) * TpccConstants.THINKTIME_STOCK_LEVEL * 1000;
 	}
 
+	@Override
+	public Object[] generateParameter(int selfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

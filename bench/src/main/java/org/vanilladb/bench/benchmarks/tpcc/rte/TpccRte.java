@@ -35,8 +35,8 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	private int homeWid;
 	private Map<BenchTransactionType, TpccTxExecutor> executors;
 
-	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId) {
-		super(conn, statMgr);
+	public TpccRte(StatisticMgr statMgr, int homeWarehouseId) {
+		super(statMgr);
 		homeWid = homeWarehouseId;
 		executors = new HashMap<BenchTransactionType, TpccTxExecutor>();
 		executors.put(TpccTransactionType.NEW_ORDER, new TpccTxExecutor(new NewOrderParamGen(homeWid)));
@@ -62,11 +62,5 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	
 	protected TpccTxExecutor getTxExeutor(TpccTransactionType type) {
 		return executors.get(type);
-	}
-
-	@Override
-	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
-		// TODO Auto-generated method stub
-		
 	}
 }

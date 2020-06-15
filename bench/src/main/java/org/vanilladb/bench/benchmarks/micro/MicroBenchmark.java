@@ -49,8 +49,8 @@ public class MicroBenchmark extends Benchmark {
 	}
 
 	@Override
-	public RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
-		return new MicrobenchmarkRte(conn, statMgr);
+	public RemoteTerminalEmulator<MicrobenchTransactionType> createRte(StatisticMgr statMgr) {
+		return new MicrobenchmarkRte(statMgr);
 	}
 
 	@Override

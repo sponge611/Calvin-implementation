@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.rte;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.vanilladb.bench.BenchTransactionType;
@@ -23,6 +24,7 @@ import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.comm.client.VanillaCommClient;
 import org.vanilladb.comm.client.VanillaCommClientListener;
+import org.vanilladb.comm.view.ProcessType;
 import org.vanilladb.comm.view.ProcessView;
 
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread implements VanillaCommClientListener{
@@ -37,8 +39,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private VanillaCommClient client;
 	private int serverCount = ProcessView.buildServersProcessList(-1).getSize();
 	private int targetServerId;
-	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
-		this.conn = conn;
+	public RemoteTerminalEmulator(StatisticMgr statMgr) {
 		this.statMgr = statMgr;
 		
 		// Set the thread name
@@ -52,10 +53,16 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	@Override
 	public void run() {
 		while (!stopBenchmark) {
-			TxnResultSet rs = executeTxnCycle();
-			if (!isWarmingUp)
-				statMgr.processTxnResult(rs);
+			try {
+				executeTxnCycle();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+			/*if (!isWarmingUp)
+				statMgr.processTxnResult(rs);
+		}*/
 	}
 
 	public void startRecordStatistic() {
@@ -76,9 +83,20 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		return executor.execute(conn);
 	}*/
-	private TxnResultSet executeTxnCycle() {
+	private void executeTxnCycle() throws InterruptedException {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
-		return executor.execute(this.client,this.targetServerId);
+		executor.execute(client, this.targetServerId, this.selfId);
+		Thread.sleep(2000);
+		/*synchronized(this) {
+			this.wait();
+		}*/
+	}
+	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
+		System.out.println(message);
+		/*synchronized(this) {
+			this.notify();
+		}*/
+		
 	}
 }

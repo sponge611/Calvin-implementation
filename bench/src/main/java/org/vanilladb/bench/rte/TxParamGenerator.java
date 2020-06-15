@@ -20,7 +20,7 @@ import org.vanilladb.bench.BenchTransactionType;
 public interface TxParamGenerator<T extends BenchTransactionType> {
 	
 	T getTxnType();
-
 	Object[] generateParameter();
+	Object[] generateParameter(int selfId);
 	
 }

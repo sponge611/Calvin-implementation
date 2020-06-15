@@ -2,6 +2,7 @@ package org.vanilladb.comm.server;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -103,6 +104,7 @@ public class VanillaCommServer implements P2pMessageListener, ProcessStateListen
 	@Override
 	public void onRecvTotalOrderMessage(long serialNumber, Serializable message) {
 		listener.onReceiveTotalOrderMessage(serialNumber, message);
+		listener.appendIntoClientList(message);
 	}
 
 	@Override

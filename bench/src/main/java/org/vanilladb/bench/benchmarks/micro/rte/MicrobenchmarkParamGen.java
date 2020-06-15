@@ -101,14 +101,14 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 
 		System.out.println();
 
-		for (int i = 0; i < 1000; i++) {
+		/*for (int i = 0; i < 1000; i++) {
 			Object[] params = executor.generateParameter();
 			System.out.println(Arrays.toString(params));
-		}
+		}*/
 	}
 
 	@Override
-	public Object[] generateParameter() {
+	public Object[] generateParameter(int selfId) {
 		TpccValueGenerator rvg = new TpccValueGenerator();
 		ArrayList<Object> paramList = new ArrayList<Object>();
 
@@ -125,7 +125,7 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// =========================================
 		// Decide the counts and the main partitions
 		// =========================================
-
+		
 		// Set read counts
 		int totalReadCount = TOTAL_READ_COUNT;
 		int localHotCount = LOCAL_HOT_COUNT;
@@ -150,6 +150,8 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// =====================
 		// Generating Parameters
 		// =====================
+		//Set selfId
+		paramList.add(selfId);
 		
 		// Set read count
 		paramList.add(totalReadCount);
@@ -166,11 +168,11 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// Choose write records
 		if (writeCount > 0) {
 			// A read-write tx must at least update one hot record.
-			paramList.add(paramList.get(1));
+			paramList.add(paramList.get(2));
 			
 			// Choose some item randomly from the rest of items
-			Object[] writeIds = randomlyChooseInParams(paramList, 2,
-					totalReadCount + 1, writeCount - 1);
+			Object[] writeIds = randomlyChooseInParams(paramList, 3,
+					totalReadCount + 2, writeCount - 1);
 			for (Object id : writeIds)
 				paramList.add(id);
 
@@ -222,5 +224,79 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 			int itemId = minMainPartColdData + tmp;
 			paramList.add(itemId);
 		}
+	}
+
+	@Override
+	public Object[] generateParameter() {
+		TpccValueGenerator rvg = new TpccValueGenerator();
+		ArrayList<Object> paramList = new ArrayList<Object>();
+
+//		updateSessionUser(rvg);
+		// System.out.println("sessionUser: "+sessionUser);
+		
+		// ================================
+		// Decide the types of transactions
+		// ================================
+		
+		boolean isReadWriteTx = (rvg.randomChooseFromDistribution(RW_TX_RATE, 1 - RW_TX_RATE) == 0) ? true : false;
+		boolean isLongReadTx = (rvg.randomChooseFromDistribution(LONG_READ_TX_RATE, 1 - LONG_READ_TX_RATE) == 0) ? true : false;
+		
+		// =========================================
+		// Decide the counts and the main partitions
+		// =========================================
+		
+		// Set read counts
+		int totalReadCount = TOTAL_READ_COUNT;
+		int localHotCount = LOCAL_HOT_COUNT;
+		
+		// For long read tx
+		// 10 times of total records and remote colds
+		if (isLongReadTx) {
+			totalReadCount *= 10;
+		}
+
+		// Local cold
+		int localColdCount = totalReadCount - localHotCount;
+		
+		// Write Count
+		int writeCount = 0;
+		
+		if (isReadWriteTx) {
+			writeCount = (int) (totalReadCount * WRITE_RATIO_IN_RW_TX);
+		}
+		
+		
+		// =====================
+		// Generating Parameters
+		// =====================
+		// Set read count
+		paramList.add(totalReadCount);
+
+		// Choose local hot records
+		chooseHotData(paramList, localHotCount);
+
+		// Choose local cold records
+		chooseColdData(paramList, localColdCount);
+		
+		// Set write count
+		paramList.add(writeCount);
+
+		// Choose write records
+		if (writeCount > 0) {
+			// A read-write tx must at least update one hot record.
+			paramList.add(paramList.get(1));
+			
+			// Choose some item randomly from the rest of items
+			Object[] writeIds = randomlyChooseInParams(paramList, 2,
+					totalReadCount + 1, writeCount - 1);
+			for (Object id : writeIds)
+				paramList.add(id);
+
+			// set the update value
+			for (int i = 0; i < writeCount; i++)
+				paramList.add(rvg.nextDouble() * 100000);
+		}
+
+		return paramList.toArray(new Object[0]);
 	}
 }

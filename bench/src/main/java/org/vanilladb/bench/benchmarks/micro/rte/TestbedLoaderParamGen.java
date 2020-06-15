@@ -32,4 +32,10 @@ public class TestbedLoaderParamGen implements TxParamGenerator<MicrobenchTransac
 		return new Object[] {MicrobenchConstants.NUM_ITEMS};
 	}
 
+	@Override
+	public Object[] generateParameter(int selfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -27,8 +27,8 @@ public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicrobenchTransact
 	
 	private MicrobenchmarkTxExecutor executor;
 
-	public MicrobenchmarkRte(SutConnection conn, StatisticMgr statMgr) {
-		super(conn, statMgr);
+	public MicrobenchmarkRte(StatisticMgr statMgr) {
+		super(statMgr);
 		executor = new MicrobenchmarkTxExecutor(new MicrobenchmarkParamGen());
 	}
 	
@@ -38,11 +38,5 @@ public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicrobenchTransact
 	
 	protected MicrobenchmarkTxExecutor getTxExeutor(MicrobenchTransactionType type) {
 		return executor;
-	}
-
-	@Override
-	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
-		// TODO Auto-generated method stub
-		
 	}
 }

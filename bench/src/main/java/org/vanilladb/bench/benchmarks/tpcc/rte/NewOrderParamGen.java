@@ -89,4 +89,10 @@ public class NewOrderParamGen implements TpccTxParamGenerator {
 		return (long) -Math.log(r) * TpccConstants.THINKTIME_NEW_ORDER * 1000;
 	}
 
+	@Override
+	public Object[] generateParameter(int selfId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
