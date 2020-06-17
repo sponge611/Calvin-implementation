@@ -41,6 +41,8 @@ public class TaskMgr {
 	}
 
 	public void runTask(Task task) {
+		
 		executor.execute(task);
+		
 	}
 }

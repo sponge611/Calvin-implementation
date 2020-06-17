@@ -104,7 +104,7 @@ public class VanillaDb {
 				logger.warning("discarding duplicated init request");
 			return;
 		}
-		
+	
 		// Set the stored procedure factory
 		spFactory = factory;
 
@@ -120,12 +120,12 @@ public class VanillaDb {
 		updatePlannerCls = CoreProperties.getLoader().getPropertyAsClass(
 				VanillaDb.class.getName() + ".UPDATEPLANNER",
 				IndexUpdatePlanner.class, UpdatePlanner.class);
-		
+		int nbThreads =  Thread.getAllStackTraces().keySet().size();
+		System.out.println("Thread num: " + nbThreads);
 		// initialize storage engine
 		initFileAndLogMgr(dirName);
 		initTaskMgr();
 		initTxMgr();
-
 		// the first transaction for initializing the system
 		Transaction initTx = txMgr.newTransaction(
 				Connection.TRANSACTION_SERIALIZABLE, false);
@@ -147,7 +147,7 @@ public class VanillaDb {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("the database has been recovered to a consistent state.");
 		}
-
+		
 		// initialize the statistics manager to build the histogram
 		initStatMgr(initTx);
 		
@@ -165,6 +165,7 @@ public class VanillaDb {
 
 		// finish initialization
 		inited = true;
+		System.out.println("here3 "+Thread.currentThread());
 	}
 
 	/**

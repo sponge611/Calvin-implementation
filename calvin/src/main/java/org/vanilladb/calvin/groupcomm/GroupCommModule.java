@@ -1,31 +1,33 @@
-package org.vanilladb.comm.server;
+package org.vanilladb.calvin.groupcomm;
 
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.vanilladb.comm.server.VanillaCommServer;
+import org.vanilladb.comm.server.VanillaCommServerListener;
 import org.vanilladb.comm.view.ProcessType;
 
-public class ServerDemo implements VanillaCommServerListener {
-	private static Logger logger = Logger.getLogger(ServerDemo.class.getName());
-	
+public class GroupCommModule implements VanillaCommServerListener{
+	private static Logger logger = Logger.getLogger(GroupCommModule.class.getName());
 	private static final BlockingQueue<Serializable> msgQueue =
 			new LinkedBlockingDeque<Serializable>();
 	private static BlockingQueue<Serializable> clientList = new LinkedBlockingDeque<Serializable>();
-	public static void main(String[] args) {
+	private static VanillaCommServer groupCommServer;
+	public static void startGroupComm(int selfId) {
 		if (logger.isLoggable(Level.INFO))
-			logger.info("Initializing the server...");
-		int selfId = Integer.parseInt(args[0]);
-		VanillaCommServer server = new VanillaCommServer(selfId, new ServerDemo());
-		new Thread(server).start();
-		createClientRequestHandler(server);
-		clientHandler(server);
+			logger.info("Initializing the Group Communication Module...");
+		groupCommServer = new VanillaCommServer(selfId, new GroupCommModule());
+		new Thread(groupCommServer).start();
+		createClientRequestHandler();
+		clientHandler();
+		if (logger.isLoggable(Level.INFO))
+			logger.info("Group Communication Module is ready!");
+		
+		
 	}
-
-	private static void createClientRequestHandler(
-			final VanillaCommServer server) {
+	private static void createClientRequestHandler() {
 		new Thread(new Runnable() {
 
 			@Override
@@ -33,7 +35,7 @@ public class ServerDemo implements VanillaCommServerListener {
 				while (true) {
 					try {
 						Serializable message = msgQueue.take();
-						server.sendTotalOrderMessage(message);
+						groupCommServer.sendTotalOrderMessage(message);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -46,13 +48,15 @@ public class ServerDemo implements VanillaCommServerListener {
 	@Override
 	public void onServerReady() {
 		if (logger.isLoggable(Level.INFO))
-			logger.info("The server is ready!");
+			logger.info("Group Communication Module is ready!");
+		
 	}
 
 	@Override
 	public void onServerFailed(int failedServerId) {
 		if (logger.isLoggable(Level.SEVERE))
-			logger.severe("Server " + failedServerId + " failed");
+			logger.severe("Group Communication Module " + failedServerId + " failed");
+		
 	}
 
 	@Override
@@ -64,8 +68,10 @@ public class ServerDemo implements VanillaCommServerListener {
 				e.printStackTrace();
 			}
 		}
+		
 	}
-
+	
+	//We need to modify here. Now just analyze the message print the analyzed result. 
 	@Override
 	public void onReceiveTotalOrderMessage(long serialNumber, Serializable message) {
 		Object[] pars = (Object[])message;
@@ -96,9 +102,10 @@ public class ServerDemo implements VanillaCommServerListener {
 		System.out.println("SrialNumber: " + serialNumber);
 		for (int i=0; i<writeCount; i++)
 			System.out.println(writeItemId[i]);
+		
 	}
 	
-	public static void clientHandler(final VanillaCommServer server) {
+	public static void clientHandler() {
 		new Thread(new Runnable() {
 
 			@Override
@@ -110,7 +117,7 @@ public class ServerDemo implements VanillaCommServerListener {
 						Object[] analysis = (Object[])message;
 						String str = "Got it! num: " + i;
 						Serializable ack = (Serializable)  str;
-						server.sendP2pMessage(ProcessType.CLIENT, (Integer)analysis[0], ack);
+						groupCommServer.sendP2pMessage(ProcessType.CLIENT, (Integer)analysis[0], ack);
 						i++;
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -121,9 +128,12 @@ public class ServerDemo implements VanillaCommServerListener {
 		}).start();
 		
 	}
-	
+		
+	@Override
 	public void appendIntoClientList(Serializable message) {
 		clientList.add(message);
+		
 	}
 	
+
 }

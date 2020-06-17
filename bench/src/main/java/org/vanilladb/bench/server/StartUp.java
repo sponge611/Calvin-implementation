@@ -33,5 +33,7 @@ public class StartUp {
 		
 		if (sut != null)
 			sut.startup(args);
+		int nbThreads =  Thread.getAllStackTraces().keySet().size();
+		System.out.println(nbThreads);
 	}
 }
