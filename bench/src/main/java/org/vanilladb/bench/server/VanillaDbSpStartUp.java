@@ -34,16 +34,16 @@ public class VanillaDbSpStartUp implements SutStartUp {
 		if (logger.isLoggable(Level.INFO))
 			logger.info("initing...");
 		
-		VanillaDb.init(args[0], getStoredProcedureFactory());
+		VanillaDb.init(args[1], getStoredProcedureFactory());
 		
 		if (logger.isLoggable(Level.INFO))
-			logger.info("VanillaBench server ready");
+			logger.info("VanillaDB ready");
 		
-		try {
-			SpStartUp.startUp(1099);
+		/*try {
+			//SpStartUp.startUp(1099);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	private StoredProcedureFactory getStoredProcedureFactory() {

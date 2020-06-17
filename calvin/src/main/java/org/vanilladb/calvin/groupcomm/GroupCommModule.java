@@ -46,7 +46,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 	@Override
 	public void onServerReady() {
 		if (logger.isLoggable(Level.INFO))
-			logger.info("Group Communication Module is ready!");
+			logger.info("Server is ready!");
 		
 	}
 
