@@ -22,8 +22,6 @@ public class GroupCommModule implements VanillaCommServerListener{
 		new Thread(groupCommServer).start();
 		createClientRequestHandler();
 		clientHandler();
-		if (logger.isLoggable(Level.INFO))
-			logger.info("Group Communication Module is ready!");
 		
 		
 	}
