@@ -165,6 +165,7 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// Choose local cold records
 		chooseColdData(paramList, localColdCount);
 		
+		
 		// Set write count
 		paramList.add(writeCount);
 
@@ -183,7 +184,10 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 			for (int i = 0; i < writeCount; i++)
 				paramList.add(rvg.nextDouble() * 100000);
 		}
-
+		for(int i = 0; i < paramList.size(); i++) {
+			System.out.println(paramList.get(i));
+		}
+		
 		return paramList.toArray(new Object[0]);
 	}
 	

@@ -1,6 +1,9 @@
 package org.vanilladb.calvin.groupcomm;
 
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
@@ -15,9 +18,13 @@ public class GroupCommModule implements VanillaCommServerListener{
 			new LinkedBlockingDeque<Serializable>();
 	private static BlockingQueue<Serializable> clientList = new LinkedBlockingDeque<Serializable>();
 	private static VanillaCommServer groupCommServer;
+	private static List<Serializable>messages;
+	private static int moduleId;
+	private static long epochStart;
 	public static void startGroupComm(int selfId) {
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Initializing the Group Communication Module...");
+		moduleId = selfId;
 		groupCommServer = new VanillaCommServer(selfId, new GroupCommModule());
 		new Thread(groupCommServer).start();
 		createClientRequestHandler();
@@ -30,10 +37,17 @@ public class GroupCommModule implements VanillaCommServerListener{
 
 			@Override
 			public void run() {
+				epochStart = System.currentTimeMillis();
 				while (true) {
-					try {
-						Serializable message = msgQueue.take();
-						groupCommServer.sendTotalOrderMessage(message);
+					try {	
+						if(System.currentTimeMillis() - epochStart >= 10 && !msgQueue.isEmpty()) {
+							messages = new ArrayList<Serializable>();
+							while(!msgQueue.isEmpty()) {
+								messages.add(msgQueue.take());
+							}
+							groupCommServer.sendTotalOrderMessages(messages);
+							epochStart = System.currentTimeMillis();
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -72,34 +86,41 @@ public class GroupCommModule implements VanillaCommServerListener{
 	//We need to modify here. Now just analyze the message print the analyzed result. 
 	@Override
 	public void onReceiveTotalOrderMessage(long serialNumber, Serializable message) {
+		//Analyze the serialized message
 		Object[] pars = (Object[])message;
 		int readCount;
 		int writeCount;
 		int[] readItemId;
 		int[] writeItemId;
 		double[] newItemPrice;
-		String[] itemName;
-		double[] itemPrice;
-		int indexCnt = 2;
+		int indexCnt = 0;
+		while(indexCnt < pars.length) {
+			indexCnt += 2;
+			readCount = (Integer) pars[indexCnt++];
+			readItemId = new int[readCount];
+		
+			for (int i = 0; i < readCount; i++)
+				readItemId[i] = (Integer) pars[indexCnt++];
 
-		readCount = (Integer) pars[indexCnt++];
-		readItemId = new int[readCount];
-		itemName = new String[readCount];
-		itemPrice = new double[readCount];
-
-		for (int i = 0; i < readCount; i++)
-			readItemId[i] = (Integer) pars[indexCnt++];
-
-		writeCount = (Integer) pars[indexCnt++];
-		writeItemId = new int[writeCount];
-		for (int i = 0; i < writeCount; i++)
-			writeItemId[i] = (Integer) pars[indexCnt++];
-		newItemPrice = new double[writeCount];
-		for (int i = 0; i < writeCount; i++)
-			newItemPrice[i] = (Double) pars[indexCnt++];
-		System.out.println("SrialNumber: " + serialNumber);
-		for (int i=0; i<writeCount; i++)
-			System.out.println(writeItemId[i]);
+			writeCount = (Integer) pars[indexCnt++];
+			writeItemId = new int[writeCount];
+			for (int i = 0; i < writeCount; i++)
+				writeItemId[i] = (Integer) pars[indexCnt++];
+			newItemPrice = new double[writeCount];
+			for (int i = 0; i < writeCount; i++)
+				newItemPrice[i] = (Double) pars[indexCnt++];
+			System.out.println("serialNumber: " + serialNumber);
+			System.out.println("Read Item Id");
+			for (int i=0; i<writeCount; i++)
+				System.out.println(readItemId[i]);
+			System.out.println("Write Item Id");
+			for (int i=0; i<writeCount; i++)
+				System.out.println(writeItemId[i]);
+			System.out.println("Update Item Price Id");
+			for (int i=0; i<writeCount; i++)
+				System.out.println(newItemPrice[i]);
+		}
+		
 		
 	}
 	
@@ -113,7 +134,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 					try {
 						Serializable message = clientList.take();
 						Object[] analysis = (Object[])message;
-						String str = "Got it! num: " + i;
+						String str = "Got it from module" + moduleId + " num: " + i;
 						Serializable ack = (Serializable)  str;
 						groupCommServer.sendP2pMessage(ProcessType.CLIENT, (Integer)analysis[0], ack);
 						i++;
