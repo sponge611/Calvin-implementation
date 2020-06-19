@@ -43,9 +43,7 @@ public abstract class TransactionExecutor<T extends BenchTransactionType> {
 	
 	protected abstract JdbcExecutor<T> getJdbcExecutor();
 	
-	protected SutResultSet executeTxn(VanillaCommClient client, Object[] pars, int targetServerId) throws SQLException {
-		SutResultSet result = null;
-		
+	protected void executeTxn(VanillaCommClient client, Object[] pars, int targetServerId) throws SQLException {
 		/*switch (BenchmarkerParameters.CONNECTION_MODE) {
 		case JDBC:
 			Connection jdbcConn = conn.toJdbcConnection();
@@ -57,7 +55,5 @@ public abstract class TransactionExecutor<T extends BenchTransactionType> {
 			break;
 		}*/
 		client.sendP2pMessage(ProcessType.SERVER, targetServerId, pars);
-		
-		return result;
 	}
 }

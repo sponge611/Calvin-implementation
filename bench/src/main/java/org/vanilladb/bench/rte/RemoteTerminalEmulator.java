@@ -22,10 +22,12 @@ import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
+import org.vanilladb.bench.remote.sp.VanillaDbSpResultSet;
 import org.vanilladb.comm.client.VanillaCommClient;
 import org.vanilladb.comm.client.VanillaCommClientListener;
 import org.vanilladb.comm.view.ProcessType;
 import org.vanilladb.comm.view.ProcessView;
+import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread implements VanillaCommClientListener{
 
@@ -87,13 +89,16 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		executor.execute(client, this.targetServerId, this.selfId);
-		//Thread.sleep(10000);
+		Thread.sleep(2000);
 		/*synchronized(this) {
 			this.wait();
 		}*/
 	}
 	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
-		System.out.println(message);
+		//System.out.println(message);
+		SpResultSet rs = (SpResultSet) message;
+		VanillaDbSpResultSet result = new VanillaDbSpResultSet(rs);
+		System.out.println("MicroBenchMark: " + result.outputMsg());
 		/*synchronized(this) {
 			this.notify();
 		}*/

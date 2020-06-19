@@ -120,8 +120,6 @@ public class VanillaDb {
 		updatePlannerCls = CoreProperties.getLoader().getPropertyAsClass(
 				VanillaDb.class.getName() + ".UPDATEPLANNER",
 				IndexUpdatePlanner.class, UpdatePlanner.class);
-		int nbThreads =  Thread.getAllStackTraces().keySet().size();
-		System.out.println("Thread num: " + nbThreads);
 		// initialize storage engine
 		initFileAndLogMgr(dirName);
 		initTaskMgr();
@@ -165,7 +163,7 @@ public class VanillaDb {
 
 		// finish initialization
 		inited = true;
-		System.out.println("here3 "+Thread.currentThread());
+		//System.out.println("here3 "+Thread.currentThread());
 	}
 
 	/**

@@ -22,9 +22,9 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
 public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
-
 	public MicroTxnProc() {
 		super(new MicroTxnProcParamHelper());
+		
 	}
 
 	@Override

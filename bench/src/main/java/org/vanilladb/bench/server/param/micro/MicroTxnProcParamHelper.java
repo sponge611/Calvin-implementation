@@ -32,7 +32,12 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 	private double[] newItemPrice;
 	private String[] itemName;
 	private double[] itemPrice;
+	private int clientId;
 
+	public int getClientId() {
+		return clientId;
+	}
+	
 	public int getReadCount() {
 		return readCount;
 	}
@@ -84,7 +89,7 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 		newItemPrice = new double[writeCount];
 		for (int i = 0; i < writeCount; i++)
 			newItemPrice[i] = (Double) pars[indexCnt++];
-
+		clientId = (Integer) pars[indexCnt];
 		if (writeCount == 0)
 			setReadOnly(true);
 	}

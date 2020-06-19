@@ -51,27 +51,27 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 			}
 
 			// generate parameters
-			Object[] params = pg.generateParameter();
+			Object[] params = pg.generateParameter(selfId);
 
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
 			
-			SutResultSet result = executeTxn(client, params, targetServerId);
+			executeTxn(client, params, targetServerId);
 
 			// measure txn Sresponse time
-			long txnEndTime = System.nanoTime();
-			txnRT = txnEndTime - txnRT;
+			//long txnEndTime = System.nanoTime();
+			//txnRT = txnEndTime - txnRT;
 
 			// display output
-			if (TransactionExecutor.DISPLAY_RESULT)
-				System.out.println(pg.getTxnType() + " " + result.outputMsg());
+			//if (TransactionExecutor.DISPLAY_RESULT)
+			//	System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
 			// thinking
-			if (ENABLE_THINK_AND_KEYING_TIME) {
+			/*if (ENABLE_THINK_AND_KEYING_TIME) {
 				// wait for a think time
-				long t = tpccPg.getThinkTime();
+			//	long t = tpccPg.getThinkTime();
 				Thread.sleep(t);
-			}
+			}*/
 
 			/*return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
 					result.isCommitted(), result.outputMsg());*/

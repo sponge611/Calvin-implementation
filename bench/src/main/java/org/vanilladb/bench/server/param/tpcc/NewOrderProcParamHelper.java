@@ -35,10 +35,10 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 	protected long oEntryDate;
 	protected String cLast, cCredit;
 	protected boolean itemNotFound = false;
-
+	protected int clientId;
 	@Override
 	public void prepareParameters(Object... pars) {
-		if (pars.length != 50)
+		if (pars.length != 51)
 			throw new RuntimeException("wrong pars list");
 		wid = (Integer) pars[0];
 		did = (Integer) pars[1];
@@ -52,6 +52,7 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 			items[i][2] = (Integer) pars[++j];
 		}
 		allLocal = (Boolean) pars[49];
+		clientId = (Integer) pars[50];
 	}
 
 	@Override
@@ -116,6 +117,10 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 
 	public boolean isAllLocal() {
 		return allLocal;
+	}
+	
+	public int getClientId() {
+		return clientId;
 	}
 
 	public double getwTax() {

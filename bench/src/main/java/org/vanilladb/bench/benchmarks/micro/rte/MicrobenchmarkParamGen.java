@@ -150,12 +150,6 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// =====================
 		// Generating Parameters
 		// =====================
-		//Set selfId
-		paramList.add(selfId);
-		
-		//Set storeProc id
-		paramList.add(getTxnType().getProcedureId());
-		
 		// Set read count
 		paramList.add(totalReadCount);
 
@@ -165,18 +159,17 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 		// Choose local cold records
 		chooseColdData(paramList, localColdCount);
 		
-		
 		// Set write count
 		paramList.add(writeCount);
 
 		// Choose write records
 		if (writeCount > 0) {
 			// A read-write tx must at least update one hot record.
-			paramList.add(paramList.get(3));
+			paramList.add(paramList.get(1));
 			
 			// Choose some item randomly from the rest of items
-			Object[] writeIds = randomlyChooseInParams(paramList, 4,
-					totalReadCount + 3, writeCount - 1);
+			Object[] writeIds = randomlyChooseInParams(paramList, 2,
+					totalReadCount + 1, writeCount - 1);
 			for (Object id : writeIds)
 				paramList.add(id);
 
@@ -184,10 +177,11 @@ public class MicrobenchmarkParamGen implements TxParamGenerator<MicrobenchTransa
 			for (int i = 0; i < writeCount; i++)
 				paramList.add(rvg.nextDouble() * 100000);
 		}
-		for(int i = 0; i < paramList.size(); i++) {
-			System.out.println(paramList.get(i));
-		}
 		
+		
+		//Set SelfId
+		paramList.add(selfId);
+
 		return paramList.toArray(new Object[0]);
 	}
 	

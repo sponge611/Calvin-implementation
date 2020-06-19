@@ -8,6 +8,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.vanilladb.calvin.server.Scheduler;
 import org.vanilladb.comm.server.VanillaCommServer;
 import org.vanilladb.comm.server.VanillaCommServerListener;
 import org.vanilladb.comm.view.ProcessType;
@@ -17,7 +19,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 	private static final BlockingQueue<Serializable> msgQueue =
 			new LinkedBlockingDeque<Serializable>();
 	private static BlockingQueue<Serializable> clientList = new LinkedBlockingDeque<Serializable>();
-	private static VanillaCommServer groupCommServer;
+	public static VanillaCommServer groupCommServer;
 	private static List<Serializable>messages;
 	private static int moduleId;
 	private static long epochStart;
@@ -28,7 +30,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 		groupCommServer = new VanillaCommServer(selfId, new GroupCommModule());
 		new Thread(groupCommServer).start();
 		createClientRequestHandler();
-		clientHandler();
+		//clientHandler();
 		
 		
 	}
@@ -83,44 +85,10 @@ public class GroupCommModule implements VanillaCommServerListener{
 		
 	}
 	
-	//We need to modify here. Now just analyze the message print the analyzed result. 
+	//We need to modify here. Maybe using another thread to run Scheduler.analyzeTheMicroMessage(message). 
 	@Override
 	public void onReceiveTotalOrderMessage(long serialNumber, Serializable message) {
-		//Analyze the serialized message
-		Object[] pars = (Object[])message;
-		int readCount;
-		int writeCount;
-		int[] readItemId;
-		int[] writeItemId;
-		double[] newItemPrice;
-		int indexCnt = 0;
-		while(indexCnt < pars.length) {
-			indexCnt += 2;
-			readCount = (Integer) pars[indexCnt++];
-			readItemId = new int[readCount];
-		
-			for (int i = 0; i < readCount; i++)
-				readItemId[i] = (Integer) pars[indexCnt++];
-
-			writeCount = (Integer) pars[indexCnt++];
-			writeItemId = new int[writeCount];
-			for (int i = 0; i < writeCount; i++)
-				writeItemId[i] = (Integer) pars[indexCnt++];
-			newItemPrice = new double[writeCount];
-			for (int i = 0; i < writeCount; i++)
-				newItemPrice[i] = (Double) pars[indexCnt++];
-			System.out.println("serialNumber: " + serialNumber);
-			System.out.println("Read Item Id");
-			for (int i=0; i<writeCount; i++)
-				System.out.println(readItemId[i]);
-			System.out.println("Write Item Id");
-			for (int i=0; i<writeCount; i++)
-				System.out.println(writeItemId[i]);
-			System.out.println("Update Item Price Id");
-			for (int i=0; i<writeCount; i++)
-				System.out.println(newItemPrice[i]);
-		}
-		
+		Scheduler.analyzeTheMicroMessage(message);
 		
 	}
 	

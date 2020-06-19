@@ -47,7 +47,7 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	}
 	
 	protected TpccTransactionType getNextTxType() {
-		int index = TX_TYPE_RANDOM.nextInt(TpccConstants.FREQUENCY_TOTAL);
+		/*int index = TX_TYPE_RANDOM.nextInt(TpccConstants.FREQUENCY_TOTAL);
 		if (index < TpccConstants.RANGE_NEW_ORDER)
 			return TpccTransactionType.NEW_ORDER;
 		else if (index < TpccConstants.RANGE_PAYMENT)
@@ -57,7 +57,8 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 		else if (index < TpccConstants.RANGE_DELIVERY)
 			return TpccTransactionType.DELIVERY;
 		else
-			return TpccTransactionType.STOCK_LEVEL;
+			return TpccTransactionType.STOCK_LEVEL;*/
+		return TpccTransactionType.NEW_ORDER;
 	}
 	
 	protected TpccTxExecutor getTxExeutor(TpccTransactionType type) {

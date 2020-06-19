@@ -41,15 +41,15 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
 			
-			SutResultSet result = executeTxn(client, params, targetServerId);
+			executeTxn(client, params, targetServerId);
 
 			// measure txn response time
-			long txnEndTime = System.nanoTime();
-			txnRT = txnEndTime - txnRT;
+			//long txnEndTime = System.nanoTime();
+			//txnRT = txnEndTime - txnRT;
 
 			// display output
-			if (TransactionExecutor.DISPLAY_RESULT)
-				System.out.println(pg.getTxnType() + " " + result.outputMsg());
+			//if (TransactionExecutor.DISPLAY_RESULT)
+			//	System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
 			/*return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
 					result.isCommitted(), result.outputMsg());*/

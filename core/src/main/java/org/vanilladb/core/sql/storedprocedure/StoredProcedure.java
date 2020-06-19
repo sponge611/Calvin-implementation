@@ -88,7 +88,7 @@ public abstract class StoredProcedure<H extends StoredProcedureParamHelper> {
 	
 	protected abstract void executeSql();
 	
-	protected H getParamHelper() {
+	public H getParamHelper() {
 		return paramHelper;
 	}
 	
