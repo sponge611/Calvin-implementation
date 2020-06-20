@@ -13,6 +13,7 @@ import org.vanilladb.calvin.server.Scheduler;
 import org.vanilladb.comm.server.VanillaCommServer;
 import org.vanilladb.comm.server.VanillaCommServerListener;
 import org.vanilladb.comm.view.ProcessType;
+import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 
 public class GroupCommModule implements VanillaCommServerListener{
 	private static Logger logger = Logger.getLogger(GroupCommModule.class.getName());
@@ -21,7 +22,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 	private static BlockingQueue<Serializable> clientList = new LinkedBlockingDeque<Serializable>();
 	public static VanillaCommServer groupCommServer;
 	private static List<Serializable>messages;
-	private static int moduleId;
+	public static int moduleId;
 	private static long epochStart;
 	public static void startGroupComm(int selfId) {
 		if (logger.isLoggable(Level.INFO))
@@ -81,6 +82,10 @@ public class GroupCommModule implements VanillaCommServerListener{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+		else {
+			System.out.println("Fuck");
+			Scheduler.Cache.add((SpResultSet)message);
 		}
 		
 	}

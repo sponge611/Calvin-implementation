@@ -15,6 +15,9 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.micro;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
@@ -33,6 +36,7 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 	private String[] itemName;
 	private double[] itemPrice;
 	private int clientId;
+	private List<Integer> doneId = new ArrayList<Integer>();
 
 	public int getClientId() {
 		return clientId;
@@ -101,9 +105,9 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 		Type itemPriceType = Type.DOUBLE;
 		Type itemNameType = Type.VARCHAR(24);
 		sch.addField("rc", intType);
-		for (int i = 0; i < itemName.length; i++) {
-			sch.addField("i_name_" + i, itemNameType);
-			sch.addField("i_price_" + i, itemPriceType);
+		for (int i = 0; i < doneId.size(); i++) {
+			sch.addField("i_name_" + doneId.get(i), itemNameType);
+			sch.addField("i_price_" + doneId.get(i), itemPriceType);
 		}
 		return sch;
 	}
@@ -112,11 +116,15 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
 		rec.setVal("rc", new IntegerConstant(itemName.length));
-		for (int i = 0; i < itemName.length; i++) {
-			rec.setVal("i_name_" + i, new VarcharConstant(itemName[i], Type.VARCHAR(24)));
-			rec.setVal("i_price_" + i, new DoubleConstant(itemPrice[i]));
+		for (int i = 0; i < doneId.size(); i++) {
+			rec.setVal("i_name_" + doneId.get(i), new VarcharConstant(itemName[doneId.get(i)], Type.VARCHAR(24)));
+			rec.setVal("i_price_" + doneId.get(i), new DoubleConstant(itemPrice[doneId.get(i)]));
 		}
 		return rec;
+	}
+	
+	public void done(int id) {
+		doneId.add(id);
 	}
 
 }

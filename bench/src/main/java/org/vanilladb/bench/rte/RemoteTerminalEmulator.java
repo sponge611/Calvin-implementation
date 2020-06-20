@@ -89,7 +89,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		executor.execute(client, this.targetServerId, this.selfId);
-		Thread.sleep(2000);
+		Thread.sleep(10000);
 		/*synchronized(this) {
 			this.wait();
 		}*/

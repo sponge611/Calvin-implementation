@@ -27,7 +27,7 @@ public class SpResultSet implements Serializable {
 	private boolean isCommitted;
 	private Schema schema;
 	private Record[] records;
-
+	private long txNum = -1;
 	public SpResultSet(boolean isCommitted, Schema schema, Record... records) {
 		this.isCommitted = isCommitted;
 		this.records = records;
@@ -37,12 +37,23 @@ public class SpResultSet implements Serializable {
 	public Record[] getRecords() {
 		return records;
 	}
-
+	public Record getRecord() {
+		return records[0];
+	}
 	public Schema getSchema() {
 		return schema;
 	}
 	
 	public boolean isCommitted() {
 		return isCommitted;
+	}
+	public void setCommitted() {
+		isCommitted = true;
+	}
+	public void setTxNum(long num) {
+		txNum = num;
+	}
+	public long getTxNum() {
+		return txNum;
 	}
 }

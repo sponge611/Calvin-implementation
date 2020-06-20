@@ -59,8 +59,8 @@ public abstract class StoredProcedure<H extends StoredProcedureParamHelper> {
 			executeSql();
 			
 			// The transaction finishes normally
-			tx.commit();
-			isCommitted = true;
+			//tx.commit();
+			//isCommitted = true;
 			
 		} catch (LockAbortException lockAbortEx) {
 			if (logger.isLoggable(Level.WARNING))

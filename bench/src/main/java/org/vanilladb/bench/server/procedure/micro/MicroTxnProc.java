@@ -43,11 +43,11 @@ public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
 			if (s.next()) {
 				String name = (String) s.getVal("i_name").asJavaVal();
 				double price = (Double) s.getVal("i_price").asJavaVal();
-
+				paramHelper.done(idx);
 				paramHelper.setItemName(name, idx);
 				paramHelper.setItemPrice(price, idx);
-			} else
-				throw new RuntimeException("Cloud not find item record with i_id = " + iid);
+			} /*else
+				throw new RuntimeException("Cloud not find item record with i_id = " + iid);*/
 
 			s.close();
 		}

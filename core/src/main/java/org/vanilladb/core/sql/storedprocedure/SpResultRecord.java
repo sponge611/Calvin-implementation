@@ -45,6 +45,13 @@ public class SpResultRecord implements Record, Serializable {
 	public void setVal(String fldName, Constant val) {
 		fldValueMap.put(fldName, val);
 	}
+	
+	public int getFldValueMapSize() {
+		return fldValueMap.size();
+	}
+	public Map<String, Constant> getMap(){
+		return fldValueMap;
+	}
 
 	@Override
 	public String toString() {
