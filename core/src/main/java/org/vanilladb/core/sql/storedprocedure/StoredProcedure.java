@@ -92,7 +92,7 @@ public abstract class StoredProcedure<H extends StoredProcedureParamHelper> {
 		return paramHelper;
 	}
 	
-	protected Transaction getTransaction() {
+	public Transaction getTransaction() {
 		return tx;
 	}
 	

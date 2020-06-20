@@ -133,4 +133,16 @@ public class MergeJoinScan implements Scan {
 	public boolean hasField(String fldName) {
 		return ss1.hasField(fldName) || ss2.hasField(fldName);
 	}
+
+	@Override
+	public void getSlock() {
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

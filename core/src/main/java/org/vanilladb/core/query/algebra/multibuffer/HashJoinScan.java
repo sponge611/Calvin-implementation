@@ -89,4 +89,17 @@ public class HashJoinScan implements Scan {
 	public boolean hasField(String fldname) {
 		return current.hasField(fldname);
 	}
+
+	@Override
+	public void getSlock() {
+		// TODO Auto-generated method stub
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

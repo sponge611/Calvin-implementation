@@ -111,4 +111,16 @@ public class TableScan implements UpdateScan {
 	public void moveToRecordId(RecordId rid) {
 		rf.moveToRecordId(rid);
 	}
+
+	@Override
+	public void getSlock() {
+		rf.getSlock();
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		rf.getRecordXlock();
+		
+	}
 }

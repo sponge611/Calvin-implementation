@@ -135,4 +135,16 @@ public class GroupByScan implements Scan {
 					return true;
 		return false;
 	}
+
+	@Override
+	public void getSlock() {
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

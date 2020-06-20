@@ -351,16 +351,16 @@ public class RecordPage implements Record {
 	}
 
 	private Constant getVal(int offset, Type type) {
-		if (!isTempTable())
-			tx.concurrencyMgr().readRecord(new RecordId(blk, currentSlot));
+		/*if (!isTempTable())
+			tx.concurrencyMgr().readRecord(new RecordId(blk, currentSlot));*/
 		return currentBuff.getVal(offset, type);
 	}
 
 	private void setVal(int offset, Constant val) {
 		if (tx.isReadOnly() && !isTempTable())
 			throw new UnsupportedOperationException();
-		if (!isTempTable())
-			tx.concurrencyMgr().modifyRecord(new RecordId(blk, currentSlot));
+		/*if (!isTempTable())
+			tx.concurrencyMgr().modifyRecord(new RecordId(blk, currentSlot));*/
 		LogSeqNum lsn = doLog ? tx.recoveryMgr().logSetVal(currentBuff, offset, val)
 				: null;
 		currentBuff.setVal(offset, val, tx.getTransactionNumber(), lsn);
@@ -368,5 +368,15 @@ public class RecordPage implements Record {
 
 	private boolean isTempTable() {
 		return blk.fileName().startsWith("_temp");
+	}
+
+	public void getSlock() {
+		tx.concurrencyMgr().readRecord(new RecordId(blk,currentSlot));
+		
+	}
+
+	public void getRecordXlock() {
+		tx.concurrencyMgr().modifyRecord(new RecordId(blk, currentSlot));
+		
 	}
 }

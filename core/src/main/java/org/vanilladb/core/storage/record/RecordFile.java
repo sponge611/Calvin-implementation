@@ -406,4 +406,14 @@ public class RecordFile implements Record {
 	private boolean atLastBlock() {
 		return currentBlkNum == fileSize() - 1;
 	}
+
+	public void getSlock() {
+		rp.getSlock();
+		
+	}
+
+	public void getRecordXlock() {
+		rp.getRecordXlock();
+		
+	}
 }

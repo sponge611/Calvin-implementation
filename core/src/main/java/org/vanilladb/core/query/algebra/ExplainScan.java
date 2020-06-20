@@ -82,4 +82,16 @@ public class ExplainScan implements Scan {
 	public boolean hasField(String fldname) {
 		return schema.hasField(fldname);
 	}
+
+	@Override
+	public void getSlock() {
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

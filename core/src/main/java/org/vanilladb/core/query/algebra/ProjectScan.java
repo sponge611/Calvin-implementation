@@ -74,4 +74,18 @@ public class ProjectScan implements Scan {
 	public boolean hasField(String fldName) {
 		return fieldList.contains(fldName);
 	}
+
+	@Override
+	public void getSlock() {
+		// TODO Auto-generated method stub
+		s.getSlock();
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		s.getRecordXlock();
+		
+	}
 }

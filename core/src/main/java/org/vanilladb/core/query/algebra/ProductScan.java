@@ -108,4 +108,19 @@ public class ProductScan implements Scan {
 	public boolean hasField(String fldName) {
 		return s1.hasField(fldName) || s2.hasField(fldName);
 	}
+
+	@Override
+	public void getSlock() {
+		s1.getSlock();
+		s2.getSlock();
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		s1.getRecordXlock();
+		s2.getRecordXlock();
+		
+	}
 }

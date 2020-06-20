@@ -6,10 +6,12 @@ import java.util.concurrent.Executors;
 
 import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
 import org.vanilladb.bench.server.param.tpcc.NewOrderProcParamHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.bench.server.procedure.micro.MicroTxnProc;
 import org.vanilladb.bench.server.procedure.tpcc.NewOrderProc;
 import org.vanilladb.calvin.groupcomm.GroupCommModule;
 import org.vanilladb.comm.view.ProcessType;
+import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 
@@ -49,7 +51,7 @@ public class Scheduler {
 		
 		
 	}
-	
+	//For NewOrder Txn now
 	public static void analyzeTheTpccMessage(Serializable message) {
 		//Analyze the serialized message
 		Object[] deserialized = (Object[]) message;
@@ -75,6 +77,24 @@ public class Scheduler {
 			}
 			MicroTxnProc sp = new MicroTxnProc();
 			sp.prepare(pars);
+			
+			//Conservative locking
+			for (int idx = 0; idx < sp.getParamHelper().getReadCount(); idx++) {
+				int iid = sp.getParamHelper().getReadItemId(idx);
+				Scan s = StoredProcedureHelper.executeQuery(
+					"SELECT i_name, i_price FROM item WHERE i_id = " + iid,
+					sp.getTransaction()
+				);
+				s.beforeFirst();
+				if (s.next()) {
+					s.getSlock();	
+					s.getRecordXlock();
+				} 
+				s.close();
+			}
+
+			
+			
 			executor.execute(new MicroWork(sp));
 		}
 	}

@@ -117,4 +117,17 @@ public class ChunkScan implements Scan {
 		rp = pages.get((int) (current - startBlkNum));
 		rp.moveToId(-1);
 	}
+
+	@Override
+	public void getSlock() {
+		// TODO Auto-generated method stub
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

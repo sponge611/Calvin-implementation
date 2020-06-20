@@ -145,4 +145,16 @@ public class IndexJoinScan implements Scan {
 		idx.beforeFirst(searchRange);
 	}
 
+	@Override
+	public void getSlock() {
+		// do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

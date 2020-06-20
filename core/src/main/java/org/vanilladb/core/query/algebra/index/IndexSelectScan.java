@@ -132,4 +132,16 @@ public class IndexSelectScan implements UpdateScan {
 	public void moveToRecordId(RecordId rid) {
 		ts.moveToRecordId(rid);
 	}
+
+	@Override
+	public void getSlock() {
+		// do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }

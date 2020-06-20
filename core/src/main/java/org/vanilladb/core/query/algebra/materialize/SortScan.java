@@ -148,4 +148,17 @@ public class SortScan implements Scan {
 		if (rid2 != null)
 			s2.moveToRecordId(rid2);
 	}
+
+	@Override
+	public void getSlock() {
+		// TODO Auto-generated method stub
+		//do nothing
+		
+	}
+
+	@Override
+	public void getRecordXlock() {
+		// TODO Auto-generated method stub
+		
+	}
 }
