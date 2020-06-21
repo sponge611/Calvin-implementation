@@ -65,7 +65,13 @@ public class Scheduler {
 			}
 			else {
 				while(record.getFldValueMapSize() != 21) {
-						Thread.yield();;
+						Thread.yield();
+						/*try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}*/
 						//System.out.println("Yeeeeeee");
 						for(int i=0; i<Cache.size();i++) {
 							SpResultSet temp = Cache.get(i);
@@ -131,7 +137,7 @@ public class Scheduler {
 				
 				for(int idx=0;idx<10;idx++) {
 					//System.out.println(sp.getParamHelper().getReadItemId(idx));
-					if(GroupCommModule.moduleId != 0 && sp.getParamHelper().getReadItemId(idx)<=100000) {
+					if(GroupCommModule.moduleId != 0 && sp.getParamHelper().getReadItemId(idx)<=150000) {
 						MetaData.put(sp.getTransaction().getTransactionNumber(), 0);
 					}
 				}

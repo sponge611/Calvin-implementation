@@ -95,9 +95,11 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		executor.execute(client, this.targetServerId, this.selfId);
 		//Thread.sleep(10000);
 		this.txnRT = System.nanoTime();
+		//System.out.println("@@@");
 		synchronized(this) {
 			this.wait();
 		}
+		//Thread.sleep(1);
 	}
 	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
 		//System.out.println(message);
