@@ -18,9 +18,11 @@ package org.vanilladb.bench.rte;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.vanilladb.bench.App;
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.sp.VanillaDbSpResultSet;
 import org.vanilladb.comm.client.VanillaCommClient;
@@ -41,12 +43,14 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private VanillaCommClient client;
 	private int serverCount = ProcessView.buildServersProcessList(-1).getSize();
 	private int targetServerId;
+	private long txnRT;
+	private long txnEndTime;
 	public RemoteTerminalEmulator(StatisticMgr statMgr) {
 		this.statMgr = statMgr;
 		
 		// Set the thread name
-		setName("RTE-" + rteCount.getAndIncrement());
-		this.selfId = rteCount.get();
+		//setName("RTE-" + rteCount.getAndIncrement());
+		this.selfId = App.clientId;
 		this.targetServerId = selfId % serverCount;
 		this.client = new VanillaCommClient(this.selfId, this);
 		new Thread(client).start();
@@ -89,19 +93,26 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		executor.execute(client, this.targetServerId, this.selfId);
-		Thread.sleep(10000);
-		/*synchronized(this) {
+		//Thread.sleep(10000);
+		this.txnRT = System.nanoTime();
+		synchronized(this) {
 			this.wait();
-		}*/
+		}
 	}
 	public void onReceiveP2pMessage(ProcessType senderType, int senderId, Serializable message) {
 		//System.out.println(message);
 		SpResultSet rs = (SpResultSet) message;
 		VanillaDbSpResultSet result = new VanillaDbSpResultSet(rs);
-		System.out.println("MicroBenchMark: " + result.outputMsg());
-		/*synchronized(this) {
+		this.txnEndTime = System.nanoTime();
+		txnRT = txnEndTime - txnRT;
+		//System.out.println("MicroBenchMark: " + result.outputMsg());
+		TxnResultSet final_result = new TxnResultSet(MicrobenchTransactionType.MICRO_TXN, txnRT, txnEndTime,
+				result.isCommitted(), result.outputMsg());
+		if (!isWarmingUp)
+			statMgr.processTxnResult(final_result);
+		synchronized(this) {
 			this.notify();
-		}*/
+		}
 		
 	}
 }

@@ -18,7 +18,7 @@ package org.vanilladb.bench;
 public class App {
 	
 	private static int action;
-	
+	public static int clientId; 
 	public static void main(String[] args) {
 		try {
 			parseArguments(args);
@@ -28,6 +28,7 @@ public class App {
 		}
 
 		VanillaBench controller = new VanillaBench();
+		clientId = Integer.parseInt(args[1]);
 		switch (action) {
 		case 1: // Load testbed
 			controller.loadTestbed();

@@ -84,7 +84,7 @@ public class GroupCommModule implements VanillaCommServerListener{
 			}
 		}
 		else {
-			System.out.println("Fuck");
+			//System.out.println("Fuck");
 			Scheduler.Cache.add((SpResultSet)message);
 		}
 		

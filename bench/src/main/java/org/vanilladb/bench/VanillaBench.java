@@ -66,8 +66,9 @@ public class VanillaBench {
 			int rteCount = benchmarker.getNumOfRTEs();
 			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[rteCount];
 			emulators[0] = benchmarker.createRte(statMgr); // Reuse the connection
-			for (int i = 1; i < emulators.length; i++)
+			for (int i = 1; i < emulators.length; i++) {
 				emulators[i] = benchmarker.createRte(statMgr);
+			}
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("waiting for connections...");

@@ -97,14 +97,14 @@ public class VanillaCommServer implements P2pMessageListener, ProcessStateListen
 
 	@Override
 	public void onRecvP2pMessage(int senderId, Serializable message) {
-		System.out.println("P2P Thread: " + Thread.currentThread());
+		//System.out.println("P2P Thread: " + Thread.currentThread());
 		listener.onReceiveP2pMessage(ProcessView.toProcessType(senderId),
 				ProcessView.toLocalId(senderId), message);
 	}
 
 	@Override
 	public void onRecvTotalOrderMessage(long serialNumber, Serializable message) {
-		System.out.println("Total Order Thread: " + Thread.currentThread());
+		//System.out.println("Total Order Thread: " + Thread.currentThread());
 		listener.onReceiveTotalOrderMessage(serialNumber, message);
 		listener.appendIntoClientList(message);
 	}

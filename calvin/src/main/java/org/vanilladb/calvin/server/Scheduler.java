@@ -65,8 +65,7 @@ public class Scheduler {
 			}
 			else {
 				while(record.getFldValueMapSize() != 21) {
-					try {
-						Thread.sleep(1000);
+						Thread.yield();;
 						//System.out.println("Yeeeeeee");
 						for(int i=0; i<Cache.size();i++) {
 							SpResultSet temp = Cache.get(i);
@@ -74,20 +73,17 @@ public class Scheduler {
 							//System.out.println("This Tx Num: " + sp.getTransaction().getTransactionNumber());
 							if(temp.getTxNum() == sp.getTransaction().getTransactionNumber()) {
 								SpResultRecord temp_rec = (SpResultRecord)temp.getRecord();
-								System.out.println(temp_rec.getMap().size());
+								//System.out.println(temp_rec.getMap().size());
 								temp_rec.getMap().remove("rc");
 								for (String k : temp_rec.getMap().keySet()) {
-									System.out.println(k);
-									System.out.println(temp_rec.getMap().get(k));
+									//System.out.println(k);
+									//System.out.println(temp_rec.getMap().get(k));
 									record.getMap().put(k,temp_rec.getMap().get(k));
 								}
 								
 							}
 						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
 					//System.out.println(record.getFldValueMapSize());
 				}
 				sp.getTransaction().commit();
