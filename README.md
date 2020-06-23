@@ -2,7 +2,7 @@
 
 Let's implement a great distributed database architecture 'Calvin'.
 
-(For now, it just can run microbenchmark with the properties in the repository.)
+(For now, it only can run microbenchmark with the properties in the repository.)
 
 ## Paper References:
 
