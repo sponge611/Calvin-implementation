@@ -4,7 +4,7 @@ Let's implement a great distributed database architecture 'Calvin'.
 
 (For now, it just can run microbenchmark with the properties in the repository.)
 
-Paper References:
+# Paper References:
 
 Thomson, Alexander, and Daniel J. Abadi. "The case for determinism in database systems." Proceedings of the VLDB Endowment 3.1-2 (2010): 70-80.
 
@@ -27,9 +27,9 @@ Here is the workflow of executing a stored procedure:
 6. If a stored procedure needs to deliver a record to a remote node, it will send the record using P2p messaging API provided by VanillaComm. VanillaComm may also pass the received records to the cache module.
 7. After the stored procedure finishes the execution, it commits the transaction and then sends the result back to the clinet (VanillaBench).
 
-Run Configurations (In Eclipse):
+# Run Configurations (In Eclipse):
 
-Server Side:
+## Server Side:
 
 Project:calvin
 Main Class:org.vanilladb.calvin.server.CalvinServerStartUp
@@ -47,7 +47,7 @@ VM arguments
 -Djava.util.logging.config.file=target/classes/java/util/logging/logging.properties
 
 
-Client Side:
+## Client Side:
 
 Project:bench
 
