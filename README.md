@@ -32,6 +32,7 @@ Here is the workflow of executing a stored procedure:
 ### Server Side:
 
 Project:calvin
+
 Main Class:org.vanilladb.calvin.server.CalvinServerStartUp
 
 Program arguments
